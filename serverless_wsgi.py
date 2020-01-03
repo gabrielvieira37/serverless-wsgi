@@ -101,21 +101,22 @@ def handle_request(app, event, context):
         "1",
     ]
 
-    if u"amazonaws.com" in headers.get(u"Host", u"") and not strip_stage_path:
-        script_name = "/{}".format(event[u"requestContext"].get(u"stage", ""))
-    else:
-        script_name = ""
+    event_request_context = event['requestContext']
+    resource_path = event_request_context['resourcePath']
 
-    # If a user is using a custom domain on API Gateway, they may have a base
-    # path in their URL. This allows us to strip it out via an optional
-    # environment variable.
+    proxy_index = resource_path.find('{')
+    #Get string index if you find a bracket for {proxy +} 
+    #otherwise return -1 the end of the string
+
+    resource_path_no_proxy = resource_path[:proxy_index]
+
+    #Start with index 1 to prevent \ {proxy+} to clean all path
+    resource_start_index = event_request_context['path'].find(resource_path_no_proxy, 1)
+
+    script_name = event_request_context['path'][:resource_start_index]
+
     path_info = event[u"path"]
-    base_path = os.environ.get("API_GATEWAY_BASE_PATH")
-    if base_path:
-        script_name = "/" + base_path
-
-        if path_info.startswith(script_name):
-            path_info = path_info[len(script_name) :]
+  
 
     body = event[u"body"] or ""
     if event.get("isBase64Encoded", False):
