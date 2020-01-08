@@ -62,6 +62,12 @@ def handler(event, context):
     """ Lambda event handler, invokes the WSGI wrapper and handles command invocation
     """
     if "_serverless-wsgi" in event:
+        print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB2", file=sys.stderr)
+        return {
+            "body": "Hello! "*10,
+            "isBase64Encoded": False,
+        }
+
         import shlex
         import subprocess
         from werkzeug._compat import StringIO, to_native
@@ -70,7 +76,7 @@ def handler(event, context):
         native_stderr = sys.stderr
         output_buffer = StringIO()
 
-        LOGGER.debug("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3")
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3")
         try:
             sys.stdout = output_buffer
             sys.stderr = output_buffer
@@ -108,10 +114,10 @@ def handler(event, context):
             sys.stdout = native_stdout
             sys.stderr = native_stderr
 
-        LOGGER.debug("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4")
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4")
         return [0, output_buffer.getvalue()]
     else:
-        LOGGER.debug("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5")
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5")
         return serverless_wsgi.handle_request(wsgi_app, event, context)
 
 
