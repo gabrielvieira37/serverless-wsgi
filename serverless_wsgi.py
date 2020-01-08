@@ -10,11 +10,14 @@ Author: Logan Raarup <logan@logan.dk>
 import base64
 import os
 import sys
+import logging
 from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.wrappers import Response
 from werkzeug.urls import url_encode, url_unquote
 from werkzeug.http import HTTP_STATUS_CODES
 from werkzeug._compat import BytesIO, string_types, to_bytes, wsgi_encoding_dance
+
+LOGGER = logging.getLogger(__name__)
 
 # List of MIME types that should not be base64 encoded. MIME types within `text/*`
 # are included by default.
@@ -85,7 +88,7 @@ def encode_query_string(event):
 
 def handle_request(app, event, context):
     if event.get("source") in ["aws.events", "serverless-plugin-warmup"]:
-        print("Lambda warming event received, skipping handler")
+        LOGGER.debug("Lambda warming event received, skipping handler")
         return {}
 
     if u"multiValueHeaders" in event:
@@ -101,7 +104,7 @@ def handle_request(app, event, context):
         "1",
     ]
 
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1")
+    LOGGER.debug("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1")
     event_request_context = event['requestContext']
     resource_path = event_request_context['resourcePath']
 
@@ -201,5 +204,5 @@ def handle_request(app, event, context):
         else:
             returndict["body"] = base64.b64encode(response.data).decode("utf-8")
             returndict["isBase64Encoded"] = True
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2")
+    LOGGER.debug("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2")
     return returndict

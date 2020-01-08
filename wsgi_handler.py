@@ -11,7 +11,9 @@ import json
 import os
 import sys
 import traceback
+import logging
 
+LOGGER = logging.getLogger(__name__)
 # Call decompression helper from `serverless-python-requirements` if
 # available. See: https://github.com/UnitedIncome/serverless-python-requirements#dealing-with-lambdas-size-limitations
 try:
@@ -68,7 +70,7 @@ def handler(event, context):
         native_stderr = sys.stderr
         output_buffer = StringIO()
 
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3")
+        LOGGER.debug("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3")
         try:
             sys.stdout = output_buffer
             sys.stderr = output_buffer
@@ -106,10 +108,10 @@ def handler(event, context):
             sys.stdout = native_stdout
             sys.stderr = native_stderr
 
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4")
+        LOGGER.debug("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4")
         return [0, output_buffer.getvalue()]
     else:
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5")
+        LOGGER.debug("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5")
         return serverless_wsgi.handle_request(wsgi_app, event, context)
 
 
