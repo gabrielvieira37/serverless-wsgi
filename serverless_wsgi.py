@@ -104,7 +104,6 @@ def handle_request(app, event, context):
         "1",
     ]
 
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1")
     event_request_context = event['requestContext']
     resource_path = event_request_context['resourcePath']
 
@@ -180,6 +179,7 @@ def handle_request(app, event, context):
     #como é utilizado o script_name
     response = Response.from_app(app, environ)
 
+    print(f"Response: \n{response}")
     returndict = {u"statusCode": response.status_code}
 
     if u"multiValueHeaders" in event:
@@ -204,5 +204,5 @@ def handle_request(app, event, context):
         else:
             returndict["body"] = base64.b64encode(response.data).decode("utf-8")
             returndict["isBase64Encoded"] = True
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2")
+    print(f"ReturnDict: {returndict}")
     return returndict
