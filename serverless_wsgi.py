@@ -108,7 +108,7 @@ def handle_request(app, event, context):
     resource_path = event_request_context['resourcePath']
 
     proxy_index = resource_path.find('{')
-    #Get string index if you find a bracket for {proxy +} 
+    #Get string index if you find a bracket for {proxy +}
     #otherwise return -1 the end of the string
     if len(resource_path)>1:
         resource_path_no_proxy = resource_path[:proxy_index]
@@ -119,10 +119,10 @@ def handle_request(app, event, context):
 
     script_name = event_request_context['path'][:resource_start_index]
 
+    path_info = event_request_context['path'][resource_start_index:]
+
     print(f"Script name: {script_name}")
-    path_info = event[u"path"]
     print(f"Path info: {path_info}")
-  
 
     body = event[u"body"] or ""
     if event.get("isBase64Encoded", False):
@@ -135,10 +135,11 @@ def handle_request(app, event, context):
         "CONTENT_TYPE": headers.get(u"Content-Type", ""),
         "PATH_INFO": url_unquote(path_info),
         "QUERY_STRING": encode_query_string(event),
-        "REMOTE_ADDR": event[u"requestContext"]
-        .get(u"identity", {})
+        "REMOTE_ADDR":
+        event[u"requestContext"].get(u"identity", {})
         .get(u"sourceIp", ""),
-        "REMOTE_USER": event[u"requestContext"]
+        "REMOTE_USER":
+        event[u"requestContext"]
         .get(u"authorizer", {})
         .get(u"principalId", ""),
         "REQUEST_METHOD": event[u"httpMethod"],
