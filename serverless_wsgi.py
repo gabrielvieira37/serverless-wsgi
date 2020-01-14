@@ -110,9 +110,10 @@ def handle_request(app, event, context):
     proxy_index = resource_path.find('{')
     #Get string index if you find a bracket for {proxy +} 
     #otherwise return -1 the end of the string
-
-    resource_path_no_proxy = resource_path[:proxy_index]
-
+    if len(resource_path)>1:
+        resource_path_no_proxy = resource_path[:proxy_index]
+    else:
+        resource_path_no_proxy = resource_path
     #Start with index 1 to prevent \ {proxy+} to clean all path
     resource_start_index = event_request_context['path'].find(resource_path_no_proxy, 1)
 
