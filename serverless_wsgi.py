@@ -119,7 +119,9 @@ def handle_request(app, event, context):
 
     script_name = event_request_context['path'][:resource_start_index]
 
+    print(f"Script name: {script_name}")
     path_info = event[u"path"]
+    print(f"Path info: {path_info}")
   
 
     body = event[u"body"] or ""
@@ -178,6 +180,7 @@ def handle_request(app, event, context):
     #Não sei o que faz o werkzeug.wrapper.response.from_app 
     #saber o que o environ é necessario
     #como é utilizado o script_name
+    print(f"Environ : \n{environ}")
     response = Response.from_app(app, environ)
 
     print(f"Response: \n{response}")
