@@ -82,8 +82,7 @@ def encode_query_string(event):
     multi = event.get(u"multiValueQueryStringParameters")
     if multi:
         return url_encode(MultiDict((i, j) for i in multi for j in multi[i]))
-    else:
-        return url_encode(event.get(u"queryStringParameters") or {})
+    return url_encode(event.get(u"queryStringParameters") or {})
 
 
 def handle_request(app, event, context):
@@ -110,7 +109,7 @@ def handle_request(app, event, context):
     proxy_index = resource_path.find('{')
     #Get string index if you find a bracket for {proxy +}
     #otherwise return -1 the end of the string
-    if len(resource_path)>1:
+    if len(resource_path) > 1:
         resource_path_no_proxy = resource_path[:proxy_index]
     else:
         resource_path_no_proxy = resource_path
@@ -121,6 +120,7 @@ def handle_request(app, event, context):
 
     path_info = event_request_context['path'][resource_start_index:]
 
+    os.environ['SCRIPT_NAME'] = script_name
     print(f"Script name: {script_name}")
     print(f"Path info: {path_info}")
 
@@ -178,7 +178,7 @@ def handle_request(app, event, context):
         if key not in ("HTTP_CONTENT_TYPE", "HTTP_CONTENT_LENGTH"):
             environ[key] = value
 
-    #Não sei o que faz o werkzeug.wrapper.response.from_app 
+    #Não sei o que faz o werkzeug.wrapper.response.from_app
     #saber o que o environ é necessario
     #como é utilizado o script_name
     print(f"Environ : \n{environ}")
@@ -202,7 +202,7 @@ def handle_request(app, event, context):
     if response.data:
         mimetype = response.mimetype or "text/plain"
         if (
-            mimetype.startswith("text/") or mimetype in TEXT_MIME_TYPES
+                mimetype.startswith("text/") or mimetype in TEXT_MIME_TYPES
         ) and not response.headers.get("Content-Encoding", ""):
             returndict["body"] = response.get_data(as_text=True)
             returndict["isBase64Encoded"] = False
