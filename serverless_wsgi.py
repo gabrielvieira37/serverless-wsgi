@@ -113,6 +113,9 @@ def handle_request(app, event, context):
         resource_path_no_proxy = resource_path[:proxy_index]
     else:
         resource_path_no_proxy = resource_path
+
+    if event_request_context['path'].count('/')==1:
+        event_request_context['path'] = event_request_context['path'] + '/'
     #Start with index 1 to prevent \ {proxy+} to clean all path
     resource_start_index = event_request_context['path'].find(resource_path_no_proxy, 1)
 
@@ -121,8 +124,12 @@ def handle_request(app, event, context):
     path_info = event_request_context['path'][resource_start_index:]
 
     os.environ['SCRIPT_NAME'] = script_name
-    print(f"Script name: {script_name}")
-    print(f"Path info: {path_info}")
+
+    debug = os.getenv('WSGI_EVENT_DEBUG', True)
+
+    if debug:
+        print(f"Script name: {script_name}")
+        print(f"Path info: {path_info}")
 
     body = event[u"body"] or ""
     if event.get("isBase64Encoded", False):
@@ -178,13 +185,15 @@ def handle_request(app, event, context):
         if key not in ("HTTP_CONTENT_TYPE", "HTTP_CONTENT_LENGTH"):
             environ[key] = value
 
-    #Não sei o que faz o werkzeug.wrapper.response.from_app
-    #saber o que o environ é necessario
     #como é utilizado o script_name
-    print(f"Environ : \n{environ}")
+    if debug:
+        print(f"Environ : \n{environ}")
+
     response = Response.from_app(app, environ)
 
-    print(f"Response: \n{response}")
+    if debug:
+        print(f"Response: \n{response}")
+
     returndict = {u"statusCode": response.status_code}
 
     if u"multiValueHeaders" in event:
@@ -209,5 +218,6 @@ def handle_request(app, event, context):
         else:
             returndict["body"] = base64.b64encode(response.data).decode("utf-8")
             returndict["isBase64Encoded"] = True
-    print(f"ReturnDict: {returndict}")
+    if debug:
+        print(f"ReturnDict: {returndict}")
     return returndict

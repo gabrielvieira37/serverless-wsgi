@@ -49,3 +49,32 @@ __pycache__
 env/
 build/
 *.egg-info/
+
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.*
+!.gitignore
+*~
+*.pyc
+.*.*.s*
+node_modules/
+ssm_settings.py
+
+# Serverless directories
+.serverless
